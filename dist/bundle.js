@@ -21807,7 +21807,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21829,410 +21829,411 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var classList = [];
-	for (var i = 0; i < 32; ++i) {
-		//if (i % 2) {
-		classList[i] = 'dchess-piece';
-		//} else {
-		//classList[i] = '';
-		//}
+	for (var i = 0; i < 32; i += 1) {
+	  classList[i] = 'dchess-piece';
 	}
 	var statusList = [];
-	for (var _i = 0; _i < 32; ++_i) {
-		statusList[_i] = '';
+	for (var _i = 0; _i < 32; _i += 1) {
+	  statusList[_i] = '';
 	}
 	var names = ['俥', '傌', '炮', '帥', '仕', '相', '俥', '傌', '炮', '仕', '相', '兵', '兵', '兵', '兵', '兵', '車', '馬', '包', '將', '士', '象', '車', '馬', '包', '士', '象', '卒', '卒', '卒', '卒', '卒'];
 
-	var red_names = ['俥', '傌', '炮', '帥', '仕', '相', '兵'];
-	var black_names = ['車', '馬', '包', '將', '士', '象', '卒'];
+	var redNames = ['俥', '傌', '炮', '帥', '仕', '相', '兵'];
+	var blackNames = ['車', '馬', '包', '將', '士', '象', '卒'];
 	var food = {
-		'炮': ['車', '馬', '包', '將', '士', '象', '卒'],
-		'帥': ['車', '馬', '包', '將', '士', '象'],
-		'仕': ['車', '馬', '包', '士', '象', '卒'],
-		'相': ['車', '馬', '包', '象', '卒'],
-		'俥': ['車', '馬', '包', '卒'],
-		'傌': ['馬', '包', '卒'],
-		'兵': ['將', '卒'],
-		'包': ['俥', '傌', '炮', '帥', '仕', '相', '兵'],
-		'將': ['俥', '傌', '炮', '帥', '仕', '相'],
-		'士': ['俥', '傌', '炮', '仕', '相', '兵'],
-		'象': ['俥', '傌', '炮', '相', '兵'],
-		'車': ['俥', '傌', '炮', '兵'],
-		'馬': ['傌', '炮', '兵'],
-		'卒': ['帥', '兵']
+	  炮: ['車', '馬', '包', '將', '士', '象', '卒'],
+	  帥: ['車', '馬', '包', '將', '士', '象'],
+	  仕: ['車', '馬', '包', '士', '象', '卒'],
+	  相: ['車', '馬', '包', '象', '卒'],
+	  俥: ['車', '馬', '包', '卒'],
+	  傌: ['馬', '包', '卒'],
+	  兵: ['將', '卒'],
+	  包: ['俥', '傌', '炮', '帥', '仕', '相', '兵'],
+	  將: ['俥', '傌', '炮', '帥', '仕', '相'],
+	  士: ['俥', '傌', '炮', '仕', '相', '兵'],
+	  象: ['俥', '傌', '炮', '相', '兵'],
+	  車: ['俥', '傌', '炮', '兵'],
+	  馬: ['傌', '炮', '兵'],
+	  卒: ['帥', '兵']
 	};
 
 	var DarkChessApp = function (_React$Component) {
-		_inherits(DarkChessApp, _React$Component);
+	  _inherits(DarkChessApp, _React$Component);
 
-		function DarkChessApp(props) {
-			_classCallCheck(this, DarkChessApp);
+	  function DarkChessApp(props) {
+	    _classCallCheck(this, DarkChessApp);
 
-			var _this = _possibleConstructorReturn(this, (DarkChessApp.__proto__ || Object.getPrototypeOf(DarkChessApp)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (DarkChessApp.__proto__ || Object.getPrototypeOf(DarkChessApp)).call(this, props));
 
-			for (var _i2 = names.length; _i2; --_i2) {
-				var r = Math.floor(Math.random() * _i2);
-				var temp = names[_i2 - 1];
-				names[_i2 - 1] = names[r];
-				names[r] = temp;
-			}
-			var colorList = [];
-			for (var _i3 = 0; _i3 < names.length; ++_i3) {
-				if (red_names.indexOf(names[_i3]) !== -1) {
-					colorList[_i3] = 'red';
-				}
-				if (black_names.indexOf(names[_i3]) !== -1) {
-					colorList[_i3] = 'black';
-				}
-			}
-			_this.state = {
-				classList: classList,
-				statusList: statusList,
-				nameList: names,
-				colorList: colorList,
-				select: -1,
-				player: 0, // 0, 1
-				team: [],
-				redEaten: [],
-				blackEaten: []
-			};
-			_this.canMove = _this.canMove.bind(_this);
-			_this.canEat = _this.canEat.bind(_this);
-			_this.move = _this.move.bind(_this);
-			return _this;
-		}
+	    for (var _i2 = names.length; _i2; _i2 -= 1) {
+	      var r = Math.floor(Math.random() * _i2);
+	      var temp = names[_i2 - 1];
+	      names[_i2 - 1] = names[r];
+	      names[r] = temp;
+	    }
+	    var colorList = [];
+	    for (var _i3 = 0; _i3 < names.length; _i3 += 1) {
+	      if (redNames.indexOf(names[_i3]) !== -1) {
+	        colorList[_i3] = 'red';
+	      }
+	      if (blackNames.indexOf(names[_i3]) !== -1) {
+	        colorList[_i3] = 'black';
+	      }
+	    }
+	    _this.state = {
+	      classList: classList,
+	      statusList: statusList,
+	      nameList: names,
+	      colorList: colorList,
+	      select: -1,
+	      player: 0, // 0, 1
+	      team: [],
+	      redEaten: [],
+	      blackEaten: []
+	    };
+	    _this.canEat = _this.canEat.bind(_this);
+	    _this.canMove = _this.canMove.bind(_this);
+	    _this.move = _this.move.bind(_this);
+	    return _this;
+	  }
 
-		_createClass(DarkChessApp, [{
-			key: 'onClick',
-			value: function onClick(key) {
-				if (this.state.select === -1) {
-					if (this.state.classList[key] === '') {
-						return;
-					}
-					if (this.state.team.length !== 0) {
-						if (this.state.statusList[key] === 'open') {
-							if (this.state.team[this.state.player] !== this.state.colorList[key]) {
-								console.log('Can\'t select other team\'s piece');
-								return;
-							}
-						}
-					}
-					this.setState({ select: key });
-					return;
-				} else if (this.state.select === key) {
-					// white: cancel select, dark: open
-					if (this.state.statusList[key] === '') {
-						// dark: open and change player
-						var status = this.state.statusList;
-						var team = this.state.team;
-						status[key] = 'open';
-						if (team.length === 0) {
-							if (this.state.colorList[key] === 'red') {
-								team = ['red', 'black'];
-							} else {
-								team = ['black', 'red'];
-							}
-						}
-						if (this.state.player === 0) {
-							this.setState({ statusList: status,
-								team: team,
-								select: -1,
-								player: 1
-							});
-						} else {
-							this.setState({ statusList: status,
-								team: team,
-								select: -1,
-								player: 0
-							});
-						}
-						return;
-					} else {
-						this.setState({ select: -1 });
-						return;
-					}
-				} else {
-					// change select or eat others or move
-					if (this.state.classList[key] === '') {
-						if (this.canMove(this.state.select, key)) {
-							console.log('canMove');
-							this.move(this.state.select, key);
-							if (this.state.player === 0) {
-								this.setState({ select: -1, player: 1 });
-							} else {
-								this.setState({ select: -1, player: 0 });
-							}
-							return;
-						} else {
-							console.log('cannotMove');
-							this.setState({ select: -1 });
-							return;
-						}
-					} else {
-						// target not empty
-						if (this.canEat(this.state.select, key)) {
-							console.log('canEat');
-							var r = this.state.redEaten;
-							var b = this.state.blackEaten;
-							if (this.state.colorList[key] === 'red') {
-								r[r.length] = this.state.nameList[key];
-							} else {
-								b[b.length] = this.state.nameList[key];
-							}
-							this.move(this.state.select, key);
-							if (this.state.player === 0) {
-								this.setState({ select: -1, player: 1, redEaten: r, blackEaten: b });
-							} else {
-								this.setState({ select: -1, player: 0, redEaten: r, blackEaten: b });
-							}
-							return;
-						} else {
-							// can't eat
-							console.log('cannotEat');
-							this.setState({ select: -1 });
-							return;
-						}
-					}
-				}
-			}
-		}, {
-			key: 'move',
-			value: function move(key1, key2) {
-				var classL = this.state.classList;
-				var statusL = this.state.statusList;
-				var nameL = this.state.nameList;
-				var colorL = this.state.colorList;
-				classL[key2] = classL[key1];
-				classL[key1] = '';
-				statusL[key2] = statusL[key1];
-				statusL[key1] = '';
-				nameL[key2] = nameL[key1];
-				nameL[key1] = '';
-				colorL[key2] = colorL[key1];
-				colorL[key1] = '';
-				if (this.state.player === 0) {
-					this.setState({ classList: classL,
-						statusList: statusL,
-						nameList: nameL,
-						colorList: colorL,
-						select: -1,
-						player: 1
-					});
-					return;
-				} else {
-					this.setState({ classList: classL,
-						statusList: statusL,
-						nameList: nameL,
-						colorList: colorL,
-						select: -1,
-						player: 0
-					});
-					return;
-				}
-			}
-		}, {
-			key: 'canMove',
-			value: function canMove(key1, key2) {
-				var x1 = key1 % 8,
-				    y1 = Math.floor(key1 / 8),
-				    x2 = key2 % 8,
-				    y2 = Math.floor(key2 / 8);
-				if (x1 === x2) {
-					if (y1 - y2 === 1 || y1 - y2 === -1) {
-						return true;
-					}
-				}
-				if (y1 === y2) {
-					if (x1 - x2 === 1 || x1 - x2 === -1) {
-						return true;
-					}
-				}
-				return false;
-			}
-		}, {
-			key: 'canEat',
-			value: function canEat(key1, key2) {
-				var x1 = key1 % 8,
-				    y1 = Math.floor(key1 / 8),
-				    x2 = key2 % 8,
-				    y2 = Math.floor(key2 / 8);
-				if (this.state.statusList[key2] === '') {
-					return false;
-				}
-				if (x1 === x2) {
-					if (this.state.nameList[key1] !== '包' && this.state.nameList[key1] !== '炮') {
-						if (y1 - y2 === 1 || y1 - y2 === -1) {
-							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
-								return true;
-							}
-						}
-					} else if (y1 < y2) {
-						console.log(y1, y2);
-						var count = 0;
-						for (var _i4 = 1; _i4 < y2 - y1; _i4++) {
-							if (this.state.classList[key1 + _i4 * 8] !== '') {
-								console.log(key1 + _i4 * 8);
-								count += 1;
-							}
-						}
-						if (count === 1) {
-							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
-								return true;
-							}
-						}
-						console.log(count);
-						return false;
-					} else if (y1 > y2) {
-						console.log(y1, y2);
-						var _count = 0;
-						for (var _i5 = 1; _i5 < y1 - y2; _i5++) {
-							if (this.state.classList[key1 - _i5 * 8] !== '') {
-								console.log(key1 - _i5 * 8);
-								_count += 1;
-							}
-						}
-						if (_count === 1) {
-							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
-								return true;
-							}
-						}
-						console.log(_count);
-						return false;
-					}
-				}
-				if (y1 === y2) {
-					if (this.state.nameList[key1] !== '包' && this.state.nameList[key1] !== '炮') {
-						if (x1 - x2 === 1 || x1 - x2 === -1) {
-							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
-								return true;
-							}
-						}
-					} else if (x1 < x2) {
-						console.log(x1, x2);
-						var _count2 = 0;
-						for (var _i6 = 1; _i6 < x2 - x1; _i6++) {
-							if (this.state.classList[key1 + _i6] !== '') {
-								console.log(key1 + _i6);
-								_count2 += 1;
-							}
-						}
-						if (_count2 === 1) {
-							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
-								return true;
-							}
-						}
-						console.log(_count2);
-						return false;
-					} else if (x1 > x2) {
-						console.log(x1, x2);
-						var _count3 = 0;
-						for (var _i7 = 1; _i7 < x1 - x2; _i7++) {
-							if (this.state.classList[key1 - _i7] !== '') {
-								console.log(key1 - _i7);
-								_count3 += 1;
-							}
-						}
-						if (_count3 === 1) {
-							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
-								return true;
-							}
-						}
-						console.log(_count3);
-						return false;
-					}
-				}
-				return false;
-			}
-		}, {
-			key: 'showNotImplemented',
-			value: function showNotImplemented() {
-				console.warn('This function is not implemented yet.');
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				var _this2 = this;
+	  _createClass(DarkChessApp, [{
+	    key: 'onClick',
+	    value: function onClick(key) {
+	      if (this.state.select === -1) {
+	        if (this.state.classList[key] === '') {
+	          return;
+	        }
+	        if (this.state.team.length !== 0) {
+	          if (this.state.statusList[key] === 'open') {
+	            if (this.state.team[this.state.player] !== this.state.colorList[key]) {
+	              console.log('Can\'t select other team\'s piece');
+	              return;
+	            }
+	          }
+	        }
+	        this.setState({ select: key });
+	        return;
+	      } else if (this.state.select === key) {
+	        // white: cancel select, dark: open
+	        if (this.state.statusList[key] === '') {
+	          // dark: open and change player
+	          var status = this.state.statusList;
+	          var team = this.state.team;
+	          status[key] = 'open';
+	          if (team.length === 0) {
+	            if (this.state.colorList[key] === 'red') {
+	              team = ['red', 'black'];
+	            } else {
+	              team = ['black', 'red'];
+	            }
+	          }
+	          if (this.state.player === 0) {
+	            this.setState({ statusList: status,
+	              team: team,
+	              select: -1,
+	              player: 1
+	            });
+	          } else {
+	            this.setState({ statusList: status,
+	              team: team,
+	              select: -1,
+	              player: 0
+	            });
+	          }
+	          return;
+	        } else if (this.state.statusList[key] !== '') {
+	          // white: cancel
+	          this.setState({ select: -1 });
+	          return;
+	        }
+	      } else if (this.state.select !== key) {
+	        // change select or eat others or move
+	        if (this.state.statusList[this.state.select] === '') {
+	          this.setState({ select: -1 });
+	          return;
+	        }
+	        if (this.state.classList[key] === '') {
+	          if (this.canMove(this.state.select, key)) {
+	            console.log('canMove');
+	            this.move(this.state.select, key);
+	            if (this.state.player === 0) {
+	              this.setState({ select: -1, player: 1 });
+	            } else {
+	              this.setState({ select: -1, player: 0 });
+	            }
+	            return;
+	          }
+	          console.log('cannotMove');
+	          this.setState({ select: -1 });
+	          return;
+	        } else {
+	          // target not empty
+	          if (this.canEat(this.state.select, key)) {
+	            console.log('canEat');
+	            var r = this.state.redEaten;
+	            var b = this.state.blackEaten;
+	            if (this.state.colorList[key] === 'red') {
+	              r[r.length] = this.state.nameList[key];
+	            } else {
+	              b[b.length] = this.state.nameList[key];
+	            }
+	            this.move(this.state.select, key);
+	            if (this.state.player === 0) {
+	              this.setState({ select: -1, player: 1, redEaten: r, blackEaten: b });
+	            } else {
+	              this.setState({ select: -1, player: 0, redEaten: r, blackEaten: b });
+	            }
+	            return;
+	          } else {
+	            // can't eat
+	            console.log('cannotEat');
+	            this.setState({ select: -1 });
+	            return;
+	          }
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'move',
+	    value: function move(key1, key2) {
+	      var classL = this.state.classList;
+	      var statusL = this.state.statusList;
+	      var nameL = this.state.nameList;
+	      var colorL = this.state.colorList;
+	      classL[key2] = classL[key1];
+	      classL[key1] = '';
+	      statusL[key2] = statusL[key1];
+	      statusL[key1] = '';
+	      nameL[key2] = nameL[key1];
+	      nameL[key1] = '';
+	      colorL[key2] = colorL[key1];
+	      colorL[key1] = '';
+	      if (this.state.player === 0) {
+	        this.setState({ classList: classL,
+	          statusList: statusL,
+	          nameList: nameL,
+	          colorList: colorL,
+	          select: -1,
+	          player: 1
+	        });
+	        return;
+	      } else {
+	        this.setState({ classList: classL,
+	          statusList: statusL,
+	          nameList: nameL,
+	          colorList: colorL,
+	          select: -1,
+	          player: 0
+	        });
+	        return;
+	      }
+	    }
+	  }, {
+	    key: 'canMove',
+	    value: function canMove(key1, key2) {
+	      var x1 = key1 % 8;
+	      var y1 = Math.floor(key1 / 8);
+	      var x2 = key2 % 8;
+	      var y2 = Math.floor(key2 / 8);
+	      if (x1 === x2) {
+	        if (y1 - y2 === 1 || y1 - y2 === -1) {
+	          return true;
+	        }
+	      }
+	      if (y1 === y2) {
+	        if (x1 - x2 === 1 || x1 - x2 === -1) {
+	          return true;
+	        }
+	      }
+	      return false;
+	    }
+	  }, {
+	    key: 'canEat',
+	    value: function canEat(key1, key2) {
+	      var x1 = key1 % 8;
+	      var y1 = Math.floor(key1 / 8);
+	      var x2 = key2 % 8;
+	      var y2 = Math.floor(key2 / 8);
+	      if (this.state.statusList[key2] === '') {
+	        return false;
+	      }
+	      if (x1 === x2) {
+	        if (this.state.nameList[key1] !== '包' && this.state.nameList[key1] !== '炮') {
+	          if (y1 - y2 === 1 || y1 - y2 === -1) {
+	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	              return true;
+	            }
+	          }
+	        } else if (y1 < y2) {
+	          console.log(y1, y2);
+	          var count = 0;
+	          for (var _i4 = 1; _i4 < y2 - y1; _i4 += 1) {
+	            if (this.state.classList[key1 + _i4 * 8] !== '') {
+	              console.log(key1 + _i4 * 8);
+	              count += 1;
+	            }
+	          }
+	          if (count === 1) {
+	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	              return true;
+	            }
+	          }
+	          console.log(count);
+	          return false;
+	        } else if (y1 > y2) {
+	          console.log(y1, y2);
+	          var _count = 0;
+	          for (var _i5 = 1; _i5 < y1 - y2; _i5 += 1) {
+	            if (this.state.classList[key1 - _i5 * 8] !== '') {
+	              console.log(key1 - _i5 * 8);
+	              _count += 1;
+	            }
+	          }
+	          if (_count === 1) {
+	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	              return true;
+	            }
+	          }
+	          console.log(_count);
+	          return false;
+	        }
+	      }
+	      if (y1 === y2) {
+	        if (this.state.nameList[key1] !== '包' && this.state.nameList[key1] !== '炮') {
+	          if (x1 - x2 === 1 || x1 - x2 === -1) {
+	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	              return true;
+	            }
+	          }
+	        } else if (x1 < x2) {
+	          console.log(x1, x2);
+	          var _count2 = 0;
+	          for (var _i6 = 1; _i6 < x2 - x1; _i6 += 1) {
+	            if (this.state.classList[key1 + _i6] !== '') {
+	              console.log(key1 + _i6);
+	              _count2 += 1;
+	            }
+	          }
+	          if (_count2 === 1) {
+	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	              return true;
+	            }
+	          }
+	          console.log(_count2);
+	          return false;
+	        } else if (x1 > x2) {
+	          console.log(x1, x2);
+	          var _count3 = 0;
+	          for (var _i7 = 1; _i7 < x1 - x2; _i7 += 1) {
+	            if (this.state.classList[key1 - _i7] !== '') {
+	              console.log(key1 - _i7);
+	              _count3 += 1;
+	            }
+	          }
+	          if (_count3 === 1) {
+	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	              return true;
+	            }
+	          }
+	          console.log(_count3);
+	          return false;
+	        }
+	      }
+	      return false;
+	    }
+	  }, {
+	    key: 'showNotImplemented',
+	    value: function showNotImplemented() {
+	      console.warn('This function is not implemented yet.');
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
 
-				var board = this.state.classList.map(function (name, index) {
-					return _react2.default.createElement(
-						_DarkChessPiece2.default,
-						{ className: name,
-							status: _this2.state.statusList[index],
-							team: _this2.state.colorList[index],
-							key: index,
-							index: index,
-							selected: _this2.state.select === index,
-							onClick: _this2.onClick.bind(_this2)
-						},
-						_this2.state.nameList[index]
-					);
-				});
-				return _react2.default.createElement(
-					'div',
-					null,
-					_react2.default.createElement(
-						'div',
-						{ className: 'text-row' },
-						_react2.default.createElement(
-							'li',
-							{ className: 'head-grid' },
-							'\u6697\u68CB  '
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'text-grid' },
-							_react2.default.createElement(
-								'li',
-								{ className: 'small' },
-								'player: ',
-								this.state.team.length === 0 || this.state.team[this.state.player]
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'text-long' },
-							_react2.default.createElement(
-								'li',
-								{ className: 'super-small' },
-								'red: ',
-								this.state.redEaten
-							),
-							_react2.default.createElement(
-								'li',
-								{ className: 'super-small' },
-								'black: ',
-								this.state.blackEaten
-							)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'dchess-container' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'dchess-row' },
-							board.slice(0, 8)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'dchess-row' },
-							board.slice(8, 16)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'dchess-row' },
-							board.slice(16, 24)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'dchess-row' },
-							board.slice(24, 32)
-						)
-					)
-				);
-			}
-		}]);
+	      var board = this.state.classList.map(function (name, index) {
+	        return _react2.default.createElement(
+	          _DarkChessPiece2.default,
+	          {
+	            className: name,
+	            status: _this2.state.statusList[index],
+	            team: _this2.state.colorList[index],
+	            key: index,
+	            index: index,
+	            selected: _this2.state.select === index,
+	            onClick: _this2.onClick.bind(_this2)
+	          },
+	          _this2.state.nameList[index]
+	        );
+	      });
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'text-row' },
+	          _react2.default.createElement(
+	            'li',
+	            { className: 'head-grid' },
+	            '\u6697\u68CB'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'text-grid' },
+	            _react2.default.createElement(
+	              'li',
+	              { className: 'small' },
+	              'player: ',
+	              this.state.team.length === 0 || this.state.team[this.state.player]
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'text-long' },
+	            _react2.default.createElement(
+	              'li',
+	              { className: 'super-small' },
+	              'red: ',
+	              this.state.redEaten
+	            ),
+	            _react2.default.createElement(
+	              'li',
+	              { className: 'super-small' },
+	              'black: ',
+	              this.state.blackEaten
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'dchess-container' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'dchess-row' },
+	            board.slice(0, 8)
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'dchess-row' },
+	            board.slice(8, 16)
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'dchess-row' },
+	            board.slice(16, 24)
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'dchess-row' },
+	            board.slice(24, 32)
+	          )
+	        )
+	      );
+	    }
+	  }]);
 
-		return DarkChessApp;
+	  return DarkChessApp;
 	}(_react2.default.Component);
 
 		exports.default = DarkChessApp;
