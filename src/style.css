@@ -6,6 +6,31 @@
 	margin:auto;
 }
 
+.text-row {
+	position:relative;
+	top:2px;
+	width:992px;
+	height:122px;
+	margin:auto;
+	margin-top:2px;
+	text-align:left;
+	font:77px "楷体";
+	line-height:84px;
+	text-shadow:0px 0px 2px white;
+}
+
+.text-grid {
+	width:240px;
+	height:120px;
+	margin:2px;
+	display: inline-block;
+}
+
+.small {
+	width:340px;
+	font:30px "楷体";
+}
+
 .dchess-row {
 	position:relative;
 	top:2px;

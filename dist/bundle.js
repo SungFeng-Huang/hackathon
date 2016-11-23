@@ -21487,7 +21487,7 @@
 
 
 	// module
-	exports.push([module.id, ".dchess-container {\n\twidth:996px;\n\theight:500px;\n\tbackground-color: red;\n\tborder:2px;\n\tmargin:auto;\n}\n\n.dchess-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:center;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.dchess-grid {\n\twidth:120px;\n\theight:120px;\n\tbackground-color: lightgray;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.dchess-piece {\n\twidth:94px;\n\theight:94px;\n\tborder-radius:50px;\n\tbackground-color: #20aa20;\n\tborder:rgb(78,56,23) solid 3px;\n\tmargin:10px;\n\tbox-shadow:3px 3px 2px black;\n\tfloat:left;\n}\n\n.open{\n\twidth:84px;\n\theight:84px;\n\tbackground-color:rgb(192,149,106);\n\tmargin:10px;\n\tborder:double 8px;\n}\n\n.red{\n\tcolor:rgb(144,11,11);\n\tborder-color:rgb(144,11,11);\n}\n\n.black{\n\tcolor:rgb(78,56,23);\n\tborder-color:rgb(78,56,23);\n}\n", ""]);
+	exports.push([module.id, ".dchess-container {\n\twidth:996px;\n\theight:500px;\n\tbackground-color: red;\n\tborder:2px;\n\tmargin:auto;\n}\n\n.text-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:left;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.text-grid {\n\twidth:240px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.small {\n\twidth:340px;\n\tfont:30px \"\\6977\\4F53\";\n}\n\n.dchess-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:center;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.dchess-grid {\n\twidth:120px;\n\theight:120px;\n\tbackground-color: lightgray;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.dchess-piece {\n\twidth:94px;\n\theight:94px;\n\tborder-radius:50px;\n\tbackground-color: #20aa20;\n\tborder:rgb(78,56,23) solid 3px;\n\tmargin:10px;\n\tbox-shadow:3px 3px 2px black;\n\tfloat:left;\n}\n\n.open{\n\twidth:84px;\n\theight:84px;\n\tbackground-color:rgb(192,149,106);\n\tmargin:10px;\n\tborder:double 8px;\n}\n\n.red{\n\tcolor:rgb(144,11,11);\n\tborder-color:rgb(144,11,11);\n}\n\n.black{\n\tcolor:rgb(78,56,23);\n\tborder-color:rgb(78,56,23);\n}\n", ""]);
 
 	// exports
 
@@ -21830,11 +21830,11 @@
 
 	var classList = [];
 	for (var i = 0; i < 32; ++i) {
-		classList[i] = "dchess-piece";
+		classList[i] = 'dchess-piece';
 	}
 	var statusList = [];
 	for (var _i = 0; _i < 32; ++_i) {
-		statusList[_i] = "open";
+		statusList[_i] = '';
 	}
 	var names = ['俥', '傌', '炮', '帥', '仕', '相', '俥', '傌', '炮', '仕', '相', '兵', '兵', '兵', '兵', '兵', '車', '馬', '包', '將', '士', '象', '車', '馬', '包', '士', '象', '卒', '卒', '卒', '卒', '卒'];
 
@@ -21871,10 +21871,20 @@
 				names[_i2 - 1] = names[r];
 				names[r] = temp;
 			}
+			var colorList = [];
+			for (var _i3 = 0; _i3 < names.length; ++_i3) {
+				if (red_names.indexOf(names[_i3]) !== -1) {
+					colorList[_i3] = 'red';
+				}
+				if (black_names.indexOf(names[_i3]) !== -1) {
+					colorList[_i3] = 'black';
+				}
+			}
 			_this.state = {
 				classList: classList,
 				statusList: statusList,
 				nameList: names,
+				colorList: colorList,
 				select: -1,
 				player: 0, // 0, 1
 				team: []
@@ -21884,8 +21894,18 @@
 
 		_createClass(DarkChessApp, [{
 			key: 'onPress',
-			value: function onPress(key, teamcolor) {
+			value: function onPress(key) {
+				console.log(this.state.select);
+				console.log(this.state.nameList[key]);
 				if (this.state.select === -1) {
+					if (this.state.team.length !== 0) {
+						if (this.state.statusList[key] === 'open') {
+							if (this.state.team[this.state.player] !== this.state.colorList[key]) {
+								console.log('Can\'t select other team\'s piece');
+								return;
+							}
+						}
+					}
 					this.setState({ select: key });
 					return;
 				} else if (this.state.select === key) {
@@ -21896,7 +21916,7 @@
 						var team = this.state.team;
 						status[key] = 'open';
 						if (team.length === 0) {
-							if (teamcolor === 'red') {
+							if (this.state.colorList[key] === 'red') {
 								team = ['red', 'black'];
 							} else {
 								team = ['black', 'red'];
@@ -21916,8 +21936,11 @@
 							});
 						}
 						return;
+					} else {
+						this.setState({ select: -1 });
+						return;
 					}
-					return;
+				} else {// change select or eat others
 				}
 			}
 		}, {
@@ -21930,15 +21953,17 @@
 			value: function render() {
 				var _this2 = this;
 
-				var board = this.state.classList.map(function (name, key) {
+				var board = this.state.classList.map(function (name, index) {
 					return _react2.default.createElement(
 						_DarkChessPiece2.default,
 						{ className: name,
-							status: _this2.state.statusList[key],
-							key: key,
-							onClick: _this2.showNotImplemented.bind(_this2)
+							status: _this2.state.statusList[index],
+							team: _this2.state.colorList[index],
+							key: index,
+							index: index,
+							onClick: _this2.onPress.bind(_this2)
 						},
-						_this2.state.nameList[key]
+						_this2.state.nameList[index]
 					);
 				});
 				return _react2.default.createElement(
@@ -21946,8 +21971,26 @@
 					null,
 					_react2.default.createElement(
 						'div',
-						{ className: 'dchess-row' },
-						'\u6697\u68CB'
+						{ className: 'text-row' },
+						_react2.default.createElement(
+							'li',
+							{ className: 'text-grid' },
+							'\u6697\u68CB  '
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'text-grid small' },
+							'player ',
+							this.state.team.length === 0 || this.state.team[this.state.player],
+							'\'s',
+							' turn'
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'text-grid small' },
+							'select: ',
+							this.state.select === -1 || this.state.select
+						)
 					),
 					_react2.default.createElement(
 						'div',
@@ -22008,39 +22051,36 @@
 	var DarkChessPiece = function DarkChessPiece(props) {
 	  var className = props.className,
 	      status = props.status,
+	      team = props.team,
 	      children = props.children,
 	      _onClick = props.onClick,
-	      key = props.key;
+	      index = props.index;
 
-	  var team = "";
-	  if (red_names.indexOf(children) !== -1) {
-	    team = "red";
-	  }
-	  if (black_names.indexOf(children) !== -1) {
-	    team = "black";
-	  }
-	  var render = _react2.default.createElement('div', null);
 	  if (className === "" || className === undefined) {
 	    return _react2.default.createElement('div', { className: 'dchess-grid' });
 	  } else if (status === "" || status === undefined) {
 	    var extraClass = className || '';
 	    return _react2.default.createElement(
 	      'div',
-	      { className: 'dchess-grid' },
+	      { className: 'dchess-grid',
+	        onClick: function onClick() {
+	          return _onClick(index);
+	        }
+	      },
 	      _react2.default.createElement('div', { className: extraClass })
 	    );
 	  } else {
 	    var _extraClass = className || '';
 	    return _react2.default.createElement(
 	      'div',
-	      { className: 'dchess-grid' },
+	      { className: 'dchess-grid',
+	        onClick: function onClick() {
+	          return _onClick(index);
+	        }
+	      },
 	      _react2.default.createElement(
 	        'div',
-	        { className: _extraClass + ' ' + status + ' ' + team,
-	          onClick: function onClick() {
-	            return _onClick(className, status, team, children, key);
-	          }
-	        },
+	        { className: _extraClass + ' ' + status + ' ' + team },
 	        children
 	      )
 	    );

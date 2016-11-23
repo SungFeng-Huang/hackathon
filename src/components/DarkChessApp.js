@@ -4,11 +4,11 @@ import DarkChessPiece from './DarkChessPiece';
 
 let classList = [];
 for (let i = 0; i < 32; ++i) {
-	classList[i] = "dchess-piece";
+	classList[i] = 'dchess-piece';
 }
 let statusList = [];
 for (let i = 0; i < 32; ++i) {
-	statusList[i] = "open";
+	statusList[i] = '';
 }
 let names = ['俥','傌','炮','帥','仕','相','俥','傌','炮','仕','相','兵','兵','兵','兵','兵',
 			'車','馬','包','將','士','象','車','馬','包','士','象','卒','卒','卒','卒','卒'];
@@ -41,18 +41,38 @@ class DarkChessApp extends React.Component {
 			names[i-1] = names[r];
 			names[r] = temp;
 		}
+		let colorList = [];
+		for (let i = 0; i < names.length; ++i) {
+			if (red_names.indexOf(names[i]) !== -1) {
+			  colorList[i] = 'red';
+			}
+			if (black_names.indexOf(names[i]) !== -1) {
+			  colorList[i] = 'black';
+			}
+		}
 		this.state = {
 			classList : classList,
 			statusList : statusList,
 			nameList : names,
+			colorList : colorList,
 			select : -1,
 			player : 0,	// 0, 1
 			team : [],
 		}
 	}
 
-	onPress(key, teamcolor) {
+	onPress(key) {
+		console.log(this.state.select);
+		console.log(this.state.nameList[key]);
 		if (this.state.select === -1) {
+			if (this.state.team.length !== 0) {
+				if (this.state.statusList[key] === 'open') {
+					if (this.state.team[this.state.player] !== this.state.colorList[key]) {
+						console.log('Can\'t select other team\'s piece');
+						return;
+					}
+				}
+			}
 			this.setState({select: key});
 			return;
 		} else if (this.state.select === key) {			// white: cancel select, dark: open
@@ -61,7 +81,7 @@ class DarkChessApp extends React.Component {
 				let team = this.state.team;
 				status[key] = 'open';
 				if (team.length === 0) {
-					if (teamcolor === 'red') {
+					if (this.state.colorList[key] === 'red') {
 						team = ['red', 'black'];
 					} else {
 						team = ['black', 'red'];
@@ -81,8 +101,11 @@ class DarkChessApp extends React.Component {
 					})
 				}
 				return;
+			} else {
+				this.setState({select: -1});
+				return;
 			}
-			return;
+		} else {	// change select or eat others
 		}
 	}
 
@@ -91,18 +114,28 @@ class DarkChessApp extends React.Component {
 	}
 	
 	render() {
-		const board = this.state.classList.map((name, key) => {
+		const board = this.state.classList.map((name, index) => {
 			return (
 				<DarkChessPiece className={name}
-					status={this.state.statusList[key]}
-					key={key}
-					onClick={this.showNotImplemented.bind(this)}
-				>{this.state.nameList[key]}</DarkChessPiece>
+					status={this.state.statusList[index]}
+					team={this.state.colorList[index]}
+					key={index}
+					index={index}
+					onClick={this.onPress.bind(this)}
+				>{this.state.nameList[index]}</DarkChessPiece>
 			);
 		});
 		return (
 			<div>
-				<div className="dchess-row">暗棋</div>
+				<div className="text-row">
+					<li className="text-grid">暗棋  </li>
+					<li className="text-grid small">
+						player {(this.state.team.length===0) || this.state.team[this.state.player]}{'\'s'} turn
+					</li>
+					<li className="text-grid small">
+						select: {(this.state.select===-1) || this.state.select}
+					</li>
+				</div>
 				<div className="dchess-container">
 					<div className="dchess-row">
 						{board.slice(0,8)}
