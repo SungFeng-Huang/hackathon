@@ -21487,7 +21487,7 @@
 
 
 	// module
-	exports.push([module.id, ".dchess-container {\n\twidth:996px;\n\theight:500px;\n\tbackground-color: red;\n\tborder:2px;\n\tmargin:auto;\n}\n\n.text-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:left;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.text-grid {\n\twidth:240px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.small {\n\twidth:340px;\n\tfont:30px \"\\6977\\4F53\";\n}\n\n.dchess-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:center;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.dchess-grid {\n\twidth:120px;\n\theight:120px;\n\tbackground-color: lightgray;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.dchess-piece {\n\twidth:94px;\n\theight:94px;\n\tborder-radius:50px;\n\tbackground-color: #20aa20;\n\tborder:rgb(78,56,23) solid 3px;\n\tmargin:10px;\n\tbox-shadow:3px 3px 2px black;\n\tfloat:left;\n}\n\n.open{\n\twidth:84px;\n\theight:84px;\n\tbackground-color:rgb(192,149,106);\n\tmargin:10px;\n\tborder:double 8px;\n}\n\n.red{\n\tcolor:rgb(144,11,11);\n\tborder-color:rgb(144,11,11);\n}\n\n.black{\n\tcolor:rgb(78,56,23);\n\tborder-color:rgb(78,56,23);\n}\n", ""]);
+	exports.push([module.id, ".dchess-container {\n\twidth:996px;\n\theight:500px;\n\tbackground-color: red;\n\tborder:2px;\n\tmargin:auto;\n}\n\n.text-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:left;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.head-grid {\n\twidth:240px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.text-grid {\n\twidth:240px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.text-long {\n\twidth:440px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.small {\n\theight:60px;\n\tfont:30px \"\\6977\\4F53\";\n}\n\n.super-small {\n\theight:60px;\n\tfont:20px \"\\6977\\4F53\";\n}\n\n.dchess-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:center;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.dchess-grid {\n\twidth:120px;\n\theight:120px;\n\tbackground-color: lightgray;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.selected {\n\tbackground-color: lightpink;\n}\n\n.dchess-piece {\n\twidth:94px;\n\theight:94px;\n\tborder-radius:50px;\n\tbackground-color: #20aa20;\n\tborder:rgb(78,56,23) solid 3px;\n\tmargin:10px;\n\tbox-shadow:3px 3px 2px black;\n\tfloat:left;\n}\n\n.open{\n\twidth:84px;\n\theight:84px;\n\tbackground-color:rgb(192,149,106);\n\tmargin:10px;\n\tborder:double 8px;\n}\n\n.red{\n\tcolor:rgb(144,11,11);\n\tborder-color:rgb(144,11,11);\n}\n\n.black{\n\tcolor:rgb(78,56,23);\n\tborder-color:rgb(78,56,23);\n}\n", ""]);
 
 	// exports
 
@@ -21830,7 +21830,11 @@
 
 	var classList = [];
 	for (var i = 0; i < 32; ++i) {
+		//if (i % 2) {
 		classList[i] = 'dchess-piece';
+		//} else {
+		//classList[i] = '';
+		//}
 	}
 	var statusList = [];
 	for (var _i = 0; _i < 32; ++_i) {
@@ -21887,17 +21891,23 @@
 				colorList: colorList,
 				select: -1,
 				player: 0, // 0, 1
-				team: []
+				team: [],
+				redEaten: [],
+				blackEaten: []
 			};
+			_this.canMove = _this.canMove.bind(_this);
+			_this.canEat = _this.canEat.bind(_this);
+			_this.move = _this.move.bind(_this);
 			return _this;
 		}
 
 		_createClass(DarkChessApp, [{
-			key: 'onPress',
-			value: function onPress(key) {
-				console.log(this.state.select);
-				console.log(this.state.nameList[key]);
+			key: 'onClick',
+			value: function onClick(key) {
 				if (this.state.select === -1) {
+					if (this.state.classList[key] === '') {
+						return;
+					}
 					if (this.state.team.length !== 0) {
 						if (this.state.statusList[key] === 'open') {
 							if (this.state.team[this.state.player] !== this.state.colorList[key]) {
@@ -21940,8 +21950,197 @@
 						this.setState({ select: -1 });
 						return;
 					}
-				} else {// change select or eat others
+				} else {
+					// change select or eat others or move
+					if (this.state.classList[key] === '') {
+						if (this.canMove(this.state.select, key)) {
+							console.log('canMove');
+							this.move(this.state.select, key);
+							if (this.state.player === 0) {
+								this.setState({ select: -1, player: 1 });
+							} else {
+								this.setState({ select: -1, player: 0 });
+							}
+							return;
+						} else {
+							console.log('cannotMove');
+							this.setState({ select: -1 });
+							return;
+						}
+					} else {
+						// target not empty
+						if (this.canEat(this.state.select, key)) {
+							console.log('canEat');
+							var r = this.state.redEaten;
+							var b = this.state.blackEaten;
+							if (this.state.colorList[key] === 'red') {
+								r[r.length] = this.state.nameList[key];
+							} else {
+								b[b.length] = this.state.nameList[key];
+							}
+							this.move(this.state.select, key);
+							if (this.state.player === 0) {
+								this.setState({ select: -1, player: 1, redEaten: r, blackEaten: b });
+							} else {
+								this.setState({ select: -1, player: 0, redEaten: r, blackEaten: b });
+							}
+							return;
+						} else {
+							// can't eat
+							console.log('cannotEat');
+							this.setState({ select: -1 });
+							return;
+						}
+					}
 				}
+			}
+		}, {
+			key: 'move',
+			value: function move(key1, key2) {
+				var classL = this.state.classList;
+				var statusL = this.state.statusList;
+				var nameL = this.state.nameList;
+				var colorL = this.state.colorList;
+				classL[key2] = classL[key1];
+				classL[key1] = '';
+				statusL[key2] = statusL[key1];
+				statusL[key1] = '';
+				nameL[key2] = nameL[key1];
+				nameL[key1] = '';
+				colorL[key2] = colorL[key1];
+				colorL[key1] = '';
+				if (this.state.player === 0) {
+					this.setState({ classList: classL,
+						statusList: statusL,
+						nameList: nameL,
+						colorList: colorL,
+						select: -1,
+						player: 1
+					});
+					return;
+				} else {
+					this.setState({ classList: classL,
+						statusList: statusL,
+						nameList: nameL,
+						colorList: colorL,
+						select: -1,
+						player: 0
+					});
+					return;
+				}
+			}
+		}, {
+			key: 'canMove',
+			value: function canMove(key1, key2) {
+				var x1 = key1 % 8,
+				    y1 = Math.floor(key1 / 8),
+				    x2 = key2 % 8,
+				    y2 = Math.floor(key2 / 8);
+				if (x1 === x2) {
+					if (y1 - y2 === 1 || y1 - y2 === -1) {
+						return true;
+					}
+				}
+				if (y1 === y2) {
+					if (x1 - x2 === 1 || x1 - x2 === -1) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}, {
+			key: 'canEat',
+			value: function canEat(key1, key2) {
+				var x1 = key1 % 8,
+				    y1 = Math.floor(key1 / 8),
+				    x2 = key2 % 8,
+				    y2 = Math.floor(key2 / 8);
+				if (this.state.statusList[key2] === '') {
+					return false;
+				}
+				if (x1 === x2) {
+					if (this.state.nameList[key1] !== '包' && this.state.nameList[key1] !== '炮') {
+						if (y1 - y2 === 1 || y1 - y2 === -1) {
+							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+								return true;
+							}
+						}
+					} else if (y1 < y2) {
+						console.log(y1, y2);
+						var count = 0;
+						for (var _i4 = 1; _i4 < y2 - y1; _i4++) {
+							if (this.state.classList[key1 + _i4 * 8] !== '') {
+								console.log(key1 + _i4 * 8);
+								count += 1;
+							}
+						}
+						if (count === 1) {
+							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+								return true;
+							}
+						}
+						console.log(count);
+						return false;
+					} else if (y1 > y2) {
+						console.log(y1, y2);
+						var _count = 0;
+						for (var _i5 = 1; _i5 < y1 - y2; _i5++) {
+							if (this.state.classList[key1 - _i5 * 8] !== '') {
+								console.log(key1 - _i5 * 8);
+								_count += 1;
+							}
+						}
+						if (_count === 1) {
+							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+								return true;
+							}
+						}
+						console.log(_count);
+						return false;
+					}
+				}
+				if (y1 === y2) {
+					if (this.state.nameList[key1] !== '包' && this.state.nameList[key1] !== '炮') {
+						if (x1 - x2 === 1 || x1 - x2 === -1) {
+							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+								return true;
+							}
+						}
+					} else if (x1 < x2) {
+						console.log(x1, x2);
+						var _count2 = 0;
+						for (var _i6 = 1; _i6 < x2 - x1; _i6++) {
+							if (this.state.classList[key1 + _i6] !== '') {
+								console.log(key1 + _i6);
+								_count2 += 1;
+							}
+						}
+						if (_count2 === 1) {
+							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+								return true;
+							}
+						}
+						console.log(_count2);
+						return false;
+					} else if (x1 > x2) {
+						console.log(x1, x2);
+						var _count3 = 0;
+						for (var _i7 = 1; _i7 < x1 - x2; _i7++) {
+							if (this.state.classList[key1 - _i7] !== '') {
+								console.log(key1 - _i7);
+								_count3 += 1;
+							}
+						}
+						if (_count3 === 1) {
+							if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+								return true;
+							}
+						}
+						console.log(_count3);
+						return false;
+					}
+				}
+				return false;
 			}
 		}, {
 			key: 'showNotImplemented',
@@ -21961,7 +22160,8 @@
 							team: _this2.state.colorList[index],
 							key: index,
 							index: index,
-							onClick: _this2.onPress.bind(_this2)
+							selected: _this2.state.select === index,
+							onClick: _this2.onClick.bind(_this2)
 						},
 						_this2.state.nameList[index]
 					);
@@ -21974,22 +22174,34 @@
 						{ className: 'text-row' },
 						_react2.default.createElement(
 							'li',
-							{ className: 'text-grid' },
+							{ className: 'head-grid' },
 							'\u6697\u68CB  '
 						),
 						_react2.default.createElement(
-							'li',
-							{ className: 'text-grid small' },
-							'player ',
-							this.state.team.length === 0 || this.state.team[this.state.player],
-							'\'s',
-							' turn'
+							'div',
+							{ className: 'text-grid' },
+							_react2.default.createElement(
+								'li',
+								{ className: 'small' },
+								'player: ',
+								this.state.team.length === 0 || this.state.team[this.state.player]
+							)
 						),
 						_react2.default.createElement(
-							'li',
-							{ className: 'text-grid small' },
-							'select: ',
-							this.state.select === -1 || this.state.select
+							'div',
+							{ className: 'text-long' },
+							_react2.default.createElement(
+								'li',
+								{ className: 'super-small' },
+								'red: ',
+								this.state.redEaten
+							),
+							_react2.default.createElement(
+								'li',
+								{ className: 'super-small' },
+								'black: ',
+								this.state.blackEaten
+							)
 						)
 					),
 					_react2.default.createElement(
@@ -22054,15 +22266,26 @@
 	      team = props.team,
 	      children = props.children,
 	      _onClick = props.onClick,
-	      index = props.index;
+	      index = props.index,
+	      selected = props.selected;
 
+	  var outClass = void 0;
+	  if (selected) {
+	    outClass = 'selected';
+	  } else {
+	    outClass = '';
+	  }
 	  if (className === "" || className === undefined) {
-	    return _react2.default.createElement('div', { className: 'dchess-grid' });
+	    return _react2.default.createElement('div', { className: 'dchess-grid ' + outClass,
+	      onClick: function onClick() {
+	        return _onClick(index);
+	      }
+	    });
 	  } else if (status === "" || status === undefined) {
 	    var extraClass = className || '';
 	    return _react2.default.createElement(
 	      'div',
-	      { className: 'dchess-grid',
+	      { className: 'dchess-grid ' + outClass,
 	        onClick: function onClick() {
 	          return _onClick(index);
 	        }
@@ -22073,7 +22296,7 @@
 	    var _extraClass = className || '';
 	    return _react2.default.createElement(
 	      'div',
-	      { className: 'dchess-grid',
+	      { className: 'dchess-grid ' + outClass,
 	        onClick: function onClick() {
 	          return _onClick(index);
 	        }

@@ -19,6 +19,13 @@
 	text-shadow:0px 0px 2px white;
 }
 
+.head-grid {
+	width:240px;
+	height:120px;
+	margin:2px;
+	display: inline-block;
+}
+
 .text-grid {
 	width:240px;
 	height:120px;
@@ -26,9 +33,21 @@
 	display: inline-block;
 }
 
+.text-long {
+	width:440px;
+	height:120px;
+	margin:2px;
+	display: inline-block;
+}
+
 .small {
-	width:340px;
+	height:60px;
 	font:30px "楷体";
+}
+
+.super-small {
+	height:60px;
+	font:20px "楷体";
 }
 
 .dchess-row {
@@ -50,6 +69,10 @@
 	background-color: lightgray;
 	margin:2px;
 	display: inline-block;
+}
+
+.selected {
+	background-color: lightpink;
 }
 
 .dchess-piece {
