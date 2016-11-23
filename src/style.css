@@ -1,0 +1,57 @@
+.dchess-container {
+	width:996px;
+	height:500px;
+	background-color: red;
+	border:2px;
+	margin:auto;
+}
+
+.dchess-row {
+	position:relative;
+	top:2px;
+	width:992px;
+	height:122px;
+	margin:auto;
+	margin-top:2px;
+	text-align:center;
+	font:77px "楷体";
+	line-height:84px;
+	text-shadow:0px 0px 2px white;
+}
+
+.dchess-grid {
+	width:120px;
+	height:120px;
+	background-color: lightgray;
+	margin:2px;
+	display: inline-block;
+}
+
+.dchess-piece {
+	width:94px;
+	height:94px;
+	border-radius:50px;
+	background-color: #20aa20;
+	border:rgb(78,56,23) solid 3px;
+	margin:10px;
+	box-shadow:3px 3px 2px black;
+	float:left;
+}
+
+.open{
+	width:84px;
+	height:84px;
+	background-color:rgb(192,149,106);
+	margin:10px;
+	border:double 8px;
+}
+
+.red{
+	color:rgb(144,11,11);
+	border-color:rgb(144,11,11);
+}
+
+.black{
+	color:rgb(78,56,23);
+	border-color:rgb(78,56,23);
+}
