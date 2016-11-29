@@ -61,6 +61,11 @@ class DarkChessApp extends React.Component {
       redEaten: [],
       blackEaten: [],
     };
+    this.classOf = this.classOf.bind(this);
+    this.statusOf = this.statusOf.bind(this);
+    this.nameOf = this.nameOf.bind(this);
+    this.colorOf = this.colorOf.bind(this);
+    this.teamOf = this.teamOf.bind(this);
     this.selectWrongTeamPiece = this.selectWrongTeamPiece.bind(this);
     this.isGridEmpty = this.isGridEmpty.bind(this);
     this.isPieceFlipped = this.isPieceFlipped.bind(this);
@@ -78,15 +83,34 @@ class DarkChessApp extends React.Component {
     this.move = this.move.bind(this);
     this.eat = this.eat.bind(this);
     this.tryToMoveOrEat = this.tryToMoveOrEat.bind(this);
-    this.nameOf = this.nameOf.bind(this);
     this.bombCanEat = this.bombCanEat.bind(this);
     this.countPiecesBetween = this.countPiecesBetween.bind(this);
   }
 
+  classOf(key) {
+    return this.state.classList[key];
+  }
+
+  statusOf(key) {
+    return this.state.statusList[key];
+  }
+
+  nameOf(key) {
+    return this.state.nameList[key];
+  }
+
+  colorOf(key) {
+    return this.state.colorList[key];
+  }
+
+  teamOf(player) {
+    return this.state.team[player];
+  }
+
   selectWrongTeamPiece(key) {
     if (this.state.team.length !== 0) {
-      if (this.state.statusList[key] === 'open') {
-        if (this.state.team[this.state.player] !== this.state.colorList[key]) {
+      if (this.statusOf(key) === 'open') {
+        if (this.teamOf(this.state.player) !== this.colorOf(key)) {
           return true;
         }
       }
@@ -247,44 +271,29 @@ class DarkChessApp extends React.Component {
     const y1 = Math.floor(this.selected() / 8);
     const x2 = key % 8;
     const y2 = Math.floor(key / 8);
+    let count = 0;
     if (x1 === x2) {
       if (y1 < y2) {
         console.log(y1, y2);
-        let count = this.countPiecesBetween(8, true, key);
-        if (count === 1) {
-          return true;
-        }
-        console.log(count);
-        return false;
+        count = this.countPiecesBetween(8, true, key);
       } else if (y1 > y2) {
         console.log(y1, y2);
-        let count = this.countPiecesBetween(8, false, key);
-        if (count === 1) {
-          return true;
-        }
-        console.log(count);
-        return false;
+        count = this.countPiecesBetween(8, false, key);
       }
-    }
-    if (y1 === y2) {
+    } else if (y1 === y2) {
       if (x1 < x2) {
         console.log(x1, x2);
-        let count = this.countPiecesBetween(1, true, key);
-        if (count === 1) {
-          return true;
-        }
-        console.log(count);
-        return false;
+        count = this.countPiecesBetween(1, true, key);
       } else if (x1 > x2) {
         console.log(x1, x2);
-        let count = this.countPiecesBetween(1, false, key);
-        if (count === 1) {
-          return true;
-        }
-        console.log(count);
-        return false;
+        count = this.countPiecesBetween(1, false, key);
       }
     }
+    if (count === 1) {
+      return true;
+    }
+    console.log(count);
+    return false;
   }
 
   canEat(key) {
@@ -307,14 +316,10 @@ class DarkChessApp extends React.Component {
     return false;
   }
 
-  nameOf(key) {
-    return this.state.nameList[key];
-  }
-
   eat(key) {
     const r = this.state.redEaten;
     const b = this.state.blackEaten;
-    if (this.state.colorList[key] === 'red') {
+    if (this.colorOf(key) === 'red') {
       r[r.length] = this.nameOf(key);
     } else {
       b[b.length] = this.nameOf(key);
@@ -352,13 +357,13 @@ class DarkChessApp extends React.Component {
     const board = this.state.classList.map((name, index) => (
       <DarkChessPiece
         className={name}
-        status={this.state.statusList[index]}
-        team={this.state.colorList[index]}
+        status={this.statusOf(index)}
+        team={this.colorOf(index)}
         key={index}
         index={index}
         selected={this.state.select === index}
         onClick={this.onClick.bind(this)}
-      >{this.state.nameList[index]}</DarkChessPiece>
+      >{this.nameOf(index)}</DarkChessPiece>
     ));
     return (
       <div>
@@ -366,7 +371,7 @@ class DarkChessApp extends React.Component {
           <li className="head-grid">暗棋</li>
           <div className="text-grid">
             <li className="small">
-              player: {(this.state.team.length === 0) || this.state.team[this.state.player]}
+              player: {(this.state.team.length === 0) || this.teamOf(this.state.player)}
             </li>
           </div>
           <div className="text-long">

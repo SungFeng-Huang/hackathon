@@ -27,7 +27,7 @@ const DarkChessPiece = (props) => {
     return (
       <div className={`dchess-grid ${outClass}`}
         onClick={()=>onClick(index)}
-	  ><div className={extraClass}></div>
+	  ><div className={`unselectable ${extraClass}`}></div>
       </div>
     );
   } else {
@@ -35,7 +35,7 @@ const DarkChessPiece = (props) => {
     return (
       <div className={`dchess-grid ${outClass}`}
         onClick={()=>onClick(index)}
-      ><div className={`${extraClass} ${status} ${team}`}>
+      ><div className={`unselectable ${extraClass} ${status} ${team}`}>
           {children}
         </div>
       </div>

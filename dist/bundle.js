@@ -21487,7 +21487,7 @@
 
 
 	// module
-	exports.push([module.id, ".dchess-container {\n\twidth:996px;\n\theight:500px;\n\tbackground-color: red;\n\tborder:2px;\n\tmargin:auto;\n}\n\n.text-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:left;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.head-grid {\n\twidth:240px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.text-grid {\n\twidth:240px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.text-long {\n\twidth:440px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.small {\n\theight:60px;\n\tfont:30px \"\\6977\\4F53\";\n}\n\n.super-small {\n\theight:60px;\n\tfont:20px \"\\6977\\4F53\";\n}\n\n.dchess-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:center;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.dchess-grid {\n\twidth:120px;\n\theight:120px;\n\tbackground-color: lightgray;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.selected {\n\tbackground-color: lightpink;\n}\n\n.dchess-piece {\n\twidth:94px;\n\theight:94px;\n\tborder-radius:50px;\n\tbackground-color: #20aa20;\n\tborder:rgb(78,56,23) solid 3px;\n\tmargin:10px;\n\tbox-shadow:3px 3px 2px black;\n\tfloat:left;\n}\n\n.open{\n\twidth:84px;\n\theight:84px;\n\tbackground-color:rgb(192,149,106);\n\tmargin:10px;\n\tborder:double 8px;\n}\n\n.red{\n\tcolor:rgb(144,11,11);\n\tborder-color:rgb(144,11,11);\n}\n\n.black{\n\tcolor:rgb(78,56,23);\n\tborder-color:rgb(78,56,23);\n}\n", ""]);
+	exports.push([module.id, ".dchess-container {\n\twidth:996px;\n\theight:500px;\n\tbackground-color: red;\n\tborder:2px;\n\tmargin:auto;\n}\n\n.text-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:left;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.head-grid {\n\twidth:240px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.text-grid {\n\twidth:240px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.text-long {\n\twidth:440px;\n\theight:120px;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.small {\n\theight:60px;\n\tfont:30px \"\\6977\\4F53\";\n}\n\n.super-small {\n\theight:60px;\n\tfont:20px \"\\6977\\4F53\";\n}\n\n.dchess-row {\n\tposition:relative;\n\ttop:2px;\n\twidth:992px;\n\theight:122px;\n\tmargin:auto;\n\tmargin-top:2px;\n\ttext-align:center;\n\tfont:77px \"\\6977\\4F53\";\n\tline-height:84px;\n\ttext-shadow:0px 0px 2px white;\n}\n\n.dchess-grid {\n\twidth:120px;\n\theight:120px;\n\tbackground-color: lightgray;\n\tmargin:2px;\n\tdisplay: inline-block;\n}\n\n.selected {\n\tbackground-color: lightpink;\n}\n\n.unselectable {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\t-khtml-user-select: none;\n\t-moz-user-select: none;\n\t-ms-user-select: none;\n\tuser-select: none;\n}\n\n.dchess-piece {\n\twidth:94px;\n\theight:94px;\n\tborder-radius:50px;\n\tbackground-color: #20aa20;\n\tborder:rgb(78,56,23) solid 3px;\n\tmargin:10px;\n\tbox-shadow:3px 3px 2px black;\n\tfloat:left;\n}\n\n.open{\n\twidth:84px;\n\theight:84px;\n\tbackground-color:rgb(192,149,106);\n\tmargin:10px;\n\tborder:double 8px;\n}\n\n.red{\n\tcolor:rgb(144,11,11);\n\tborder-color:rgb(144,11,11);\n}\n\n.black{\n\tcolor:rgb(78,56,23);\n\tborder-color:rgb(78,56,23);\n}\n", ""]);
 
 	// exports
 
@@ -21891,6 +21891,11 @@
 	      redEaten: [],
 	      blackEaten: []
 	    };
+	    _this.classOf = _this.classOf.bind(_this);
+	    _this.statusOf = _this.statusOf.bind(_this);
+	    _this.nameOf = _this.nameOf.bind(_this);
+	    _this.colorOf = _this.colorOf.bind(_this);
+	    _this.teamOf = _this.teamOf.bind(_this);
 	    _this.selectWrongTeamPiece = _this.selectWrongTeamPiece.bind(_this);
 	    _this.isGridEmpty = _this.isGridEmpty.bind(_this);
 	    _this.isPieceFlipped = _this.isPieceFlipped.bind(_this);
@@ -21908,18 +21913,42 @@
 	    _this.move = _this.move.bind(_this);
 	    _this.eat = _this.eat.bind(_this);
 	    _this.tryToMoveOrEat = _this.tryToMoveOrEat.bind(_this);
-	    _this.nameOf = _this.nameOf.bind(_this);
 	    _this.bombCanEat = _this.bombCanEat.bind(_this);
 	    _this.countPiecesBetween = _this.countPiecesBetween.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(DarkChessApp, [{
+	    key: 'classOf',
+	    value: function classOf(key) {
+	      return this.state.classList[key];
+	    }
+	  }, {
+	    key: 'statusOf',
+	    value: function statusOf(key) {
+	      return this.state.statusList[key];
+	    }
+	  }, {
+	    key: 'nameOf',
+	    value: function nameOf(key) {
+	      return this.state.nameList[key];
+	    }
+	  }, {
+	    key: 'colorOf',
+	    value: function colorOf(key) {
+	      return this.state.colorList[key];
+	    }
+	  }, {
+	    key: 'teamOf',
+	    value: function teamOf(player) {
+	      return this.state.team[player];
+	    }
+	  }, {
 	    key: 'selectWrongTeamPiece',
 	    value: function selectWrongTeamPiece(key) {
 	      if (this.state.team.length !== 0) {
-	        if (this.state.statusList[key] === 'open') {
-	          if (this.state.team[this.state.player] !== this.state.colorList[key]) {
+	        if (this.statusOf(key) === 'open') {
+	          if (this.teamOf(this.state.player) !== this.colorOf(key)) {
 	            return true;
 	          }
 	        }
@@ -22098,44 +22127,29 @@
 	      var y1 = Math.floor(this.selected() / 8);
 	      var x2 = key % 8;
 	      var y2 = Math.floor(key / 8);
+	      var count = 0;
 	      if (x1 === x2) {
 	        if (y1 < y2) {
 	          console.log(y1, y2);
-	          var count = this.countPiecesBetween(8, true, key);
-	          if (count === 1) {
-	            return true;
-	          }
-	          console.log(count);
-	          return false;
+	          count = this.countPiecesBetween(8, true, key);
 	        } else if (y1 > y2) {
 	          console.log(y1, y2);
-	          var _count = this.countPiecesBetween(8, false, key);
-	          if (_count === 1) {
-	            return true;
-	          }
-	          console.log(_count);
-	          return false;
+	          count = this.countPiecesBetween(8, false, key);
 	        }
-	      }
-	      if (y1 === y2) {
+	      } else if (y1 === y2) {
 	        if (x1 < x2) {
 	          console.log(x1, x2);
-	          var _count2 = this.countPiecesBetween(1, true, key);
-	          if (_count2 === 1) {
-	            return true;
-	          }
-	          console.log(_count2);
-	          return false;
+	          count = this.countPiecesBetween(1, true, key);
 	        } else if (x1 > x2) {
 	          console.log(x1, x2);
-	          var _count3 = this.countPiecesBetween(1, false, key);
-	          if (_count3 === 1) {
-	            return true;
-	          }
-	          console.log(_count3);
-	          return false;
+	          count = this.countPiecesBetween(1, false, key);
 	        }
 	      }
+	      if (count === 1) {
+	        return true;
+	      }
+	      console.log(count);
+	      return false;
 	    }
 	  }, {
 	    key: 'canEat',
@@ -22159,16 +22173,11 @@
 	      return false;
 	    }
 	  }, {
-	    key: 'nameOf',
-	    value: function nameOf(key) {
-	      return this.state.nameList[key];
-	    }
-	  }, {
 	    key: 'eat',
 	    value: function eat(key) {
 	      var r = this.state.redEaten;
 	      var b = this.state.blackEaten;
-	      if (this.state.colorList[key] === 'red') {
+	      if (this.colorOf(key) === 'red') {
 	        r[r.length] = this.nameOf(key);
 	      } else {
 	        b[b.length] = this.nameOf(key);
@@ -22213,14 +22222,14 @@
 	          _DarkChessPiece2.default,
 	          {
 	            className: name,
-	            status: _this2.state.statusList[index],
-	            team: _this2.state.colorList[index],
+	            status: _this2.statusOf(index),
+	            team: _this2.colorOf(index),
 	            key: index,
 	            index: index,
 	            selected: _this2.state.select === index,
 	            onClick: _this2.onClick.bind(_this2)
 	          },
-	          _this2.state.nameList[index]
+	          _this2.nameOf(index)
 	        );
 	      });
 	      return _react2.default.createElement(
@@ -22241,7 +22250,7 @@
 	              'li',
 	              { className: 'small' },
 	              'player: ',
-	              this.state.team.length === 0 || this.state.team[this.state.player]
+	              this.state.team.length === 0 || this.teamOf(this.state.player)
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -22347,7 +22356,7 @@
 	          return _onClick(index);
 	        }
 	      },
-	      _react2.default.createElement('div', { className: extraClass })
+	      _react2.default.createElement('div', { className: 'unselectable ' + extraClass })
 	    );
 	  } else {
 	    var _extraClass = className || '';
@@ -22360,7 +22369,7 @@
 	      },
 	      _react2.default.createElement(
 	        'div',
-	        { className: _extraClass + ' ' + status + ' ' + team },
+	        { className: 'unselectable ' + _extraClass + ' ' + status + ' ' + team },
 	        children
 	      )
 	    );
