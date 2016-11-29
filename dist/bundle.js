@@ -21908,6 +21908,9 @@
 	    _this.move = _this.move.bind(_this);
 	    _this.eat = _this.eat.bind(_this);
 	    _this.tryToMoveOrEat = _this.tryToMoveOrEat.bind(_this);
+	    _this.nameOf = _this.nameOf.bind(_this);
+	    _this.bombCanEat = _this.bombCanEat.bind(_this);
+	    _this.countPiecesBetween = _this.countPiecesBetween.bind(_this);
 	    return _this;
 	  }
 
@@ -22029,14 +22032,17 @@
 	  }, {
 	    key: 'tryToMoveOrEat',
 	    value: function tryToMoveOrEat(key) {
-	      if (this.isGridEmpty(key) && this.canMove(key)) {
+	      if (this.isPieceFlipped(this.selected()) === false) {
+	        return false;
+	      }
+	      if (this.canMove(key)) {
 	        console.log('Can move');
 	        this.move(key);
 	        this.changePlayer();
 	        return true;
 	      }
 	      // target not empty
-	      if (this.isPieceFlipped(key) && this.canEat(key)) {
+	      if (this.canEat(key)) {
 	        console.log('Can eat');
 	        this.eat(key);
 	        this.changePlayer();
@@ -22045,14 +22051,127 @@
 	      return false;
 	    }
 	  }, {
+	    key: 'canMove',
+	    value: function canMove(key) {
+	      if (this.isGridEmpty(key) === false) {
+	        return false;
+	      }
+	      var x1 = this.selected() % 8;
+	      var y1 = Math.floor(this.selected() / 8);
+	      var x2 = key % 8;
+	      var y2 = Math.floor(key / 8);
+	      if (x1 === x2) {
+	        if (y1 - y2 === 1 || y1 - y2 === -1) {
+	          return true;
+	        }
+	      }
+	      if (y1 === y2) {
+	        if (x1 - x2 === 1 || x1 - x2 === -1) {
+	          return true;
+	        }
+	      }
+	      return false;
+	    }
+	  }, {
+	    key: 'countPiecesBetween',
+	    value: function countPiecesBetween(step, forward, key) {
+	      var count = 0;
+	      var times = void 0;
+	      if (forward) {
+	        times = (key - this.selected()) / step;
+	      } else {
+	        times = (this.selected() - key) / step;
+	        step = -step;
+	      }
+	      for (var _i4 = 1; _i4 < times; _i4 += 1) {
+	        if (this.isGridEmpty(this.selected() + _i4 * step) === false) {
+	          console.log(this.selected() + _i4 * step);
+	          count += 1;
+	        }
+	      }
+	      return count;
+	    }
+	  }, {
+	    key: 'bombCanEat',
+	    value: function bombCanEat(key) {
+	      var x1 = this.selected() % 8;
+	      var y1 = Math.floor(this.selected() / 8);
+	      var x2 = key % 8;
+	      var y2 = Math.floor(key / 8);
+	      if (x1 === x2) {
+	        if (y1 < y2) {
+	          console.log(y1, y2);
+	          var count = this.countPiecesBetween(8, true, key);
+	          if (count === 1) {
+	            return true;
+	          }
+	          console.log(count);
+	          return false;
+	        } else if (y1 > y2) {
+	          console.log(y1, y2);
+	          var _count = this.countPiecesBetween(8, false, key);
+	          if (_count === 1) {
+	            return true;
+	          }
+	          console.log(_count);
+	          return false;
+	        }
+	      }
+	      if (y1 === y2) {
+	        if (x1 < x2) {
+	          console.log(x1, x2);
+	          var _count2 = this.countPiecesBetween(1, true, key);
+	          if (_count2 === 1) {
+	            return true;
+	          }
+	          console.log(_count2);
+	          return false;
+	        } else if (x1 > x2) {
+	          console.log(x1, x2);
+	          var _count3 = this.countPiecesBetween(1, false, key);
+	          if (_count3 === 1) {
+	            return true;
+	          }
+	          console.log(_count3);
+	          return false;
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'canEat',
+	    value: function canEat(key) {
+	      if (this.isPieceFlipped(key) === false) {
+	        return false;
+	      }
+	      if (food[this.nameOf(this.selected())].indexOf(this.nameOf(key)) === -1) {
+	        return false;
+	      }
+	      var nameOfSelected = this.nameOf(this.selected());
+	      if (nameOfSelected !== '包' && nameOfSelected !== '炮') {
+	        var sub = this.selected() - key;
+	        if (sub === 1 || sub === -1 || sub === 8 || sub === -8) {
+	          return true;
+	        }
+	        return false;
+	      } else if (this.bombCanEat(key)) {
+	        return true;
+	      }
+	      return false;
+	    }
+	  }, {
+	    key: 'nameOf',
+	    value: function nameOf(key) {
+	      return this.state.nameList[key];
+	    }
+	  }, {
 	    key: 'eat',
 	    value: function eat(key) {
 	      var r = this.state.redEaten;
 	      var b = this.state.blackEaten;
 	      if (this.state.colorList[key] === 'red') {
-	        r[r.length] = this.state.nameList[key];
+	        r[r.length] = this.nameOf(key);
 	      } else {
-	        b[b.length] = this.state.nameList[key];
+	        b[b.length] = this.nameOf(key);
 	      }
 	      this.move(key);
 	      return this.setState({ redEaten: r, blackEaten: b });
@@ -22078,119 +22197,6 @@
 	        colorList: colorL
 	      });
 	      return this.changePlayer();
-	    }
-	  }, {
-	    key: 'canMove',
-	    value: function canMove(key) {
-	      var x1 = this.selected() % 8;
-	      var y1 = Math.floor(this.selected() / 8);
-	      var x2 = key % 8;
-	      var y2 = Math.floor(key / 8);
-	      if (x1 === x2) {
-	        if (y1 - y2 === 1 || y1 - y2 === -1) {
-	          return true;
-	        }
-	      }
-	      if (y1 === y2) {
-	        if (x1 - x2 === 1 || x1 - x2 === -1) {
-	          return true;
-	        }
-	      }
-	      return false;
-	    }
-	  }, {
-	    key: 'canEat',
-	    value: function canEat(key) {
-	      var x1 = this.selected() % 8;
-	      var y1 = Math.floor(this.selected() / 8);
-	      var x2 = key % 8;
-	      var y2 = Math.floor(key / 8);
-	      if (this.state.statusList[key] === '') {
-	        return false;
-	      }
-	      if (x1 === x2) {
-	        if (this.state.nameList[this.selected()] !== '包' && this.state.nameList[this.selected()] !== '炮') {
-	          if (y1 - y2 === 1 || y1 - y2 === -1) {
-	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-	              return true;
-	            }
-	          }
-	        } else if (y1 < y2) {
-	          console.log(y1, y2);
-	          var count = 0;
-	          for (var _i4 = 1; _i4 < y2 - y1; _i4 += 1) {
-	            if (this.state.classList[this.selected() + _i4 * 8] !== '') {
-	              console.log(this.selected() + _i4 * 8);
-	              count += 1;
-	            }
-	          }
-	          if (count === 1) {
-	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-	              return true;
-	            }
-	          }
-	          console.log(count);
-	          return false;
-	        } else if (y1 > y2) {
-	          console.log(y1, y2);
-	          var _count = 0;
-	          for (var _i5 = 1; _i5 < y1 - y2; _i5 += 1) {
-	            if (this.state.classList[this.selected() - _i5 * 8] !== '') {
-	              console.log(this.selected() - _i5 * 8);
-	              _count += 1;
-	            }
-	          }
-	          if (_count === 1) {
-	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-	              return true;
-	            }
-	          }
-	          console.log(_count);
-	          return false;
-	        }
-	      }
-	      if (y1 === y2) {
-	        if (this.state.nameList[this.selected()] !== '包' && this.state.nameList[this.selected()] !== '炮') {
-	          if (x1 - x2 === 1 || x1 - x2 === -1) {
-	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-	              return true;
-	            }
-	          }
-	        } else if (x1 < x2) {
-	          console.log(x1, x2);
-	          var _count2 = 0;
-	          for (var _i6 = 1; _i6 < x2 - x1; _i6 += 1) {
-	            if (this.state.classList[this.selected() + _i6] !== '') {
-	              console.log(this.selected() + _i6);
-	              _count2 += 1;
-	            }
-	          }
-	          if (_count2 === 1) {
-	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-	              return true;
-	            }
-	          }
-	          console.log(_count2);
-	          return false;
-	        } else if (x1 > x2) {
-	          console.log(x1, x2);
-	          var _count3 = 0;
-	          for (var _i7 = 1; _i7 < x1 - x2; _i7 += 1) {
-	            if (this.state.classList[this.selected() - _i7] !== '') {
-	              console.log(this.selected() - _i7);
-	              _count3 += 1;
-	            }
-	          }
-	          if (_count3 === 1) {
-	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-	              return true;
-	            }
-	          }
-	          console.log(_count3);
-	          return false;
-	        }
-	      }
-	      return false;
 	    }
 	  }, {
 	    key: 'showNotImplemented',

@@ -78,6 +78,9 @@ class DarkChessApp extends React.Component {
     this.move = this.move.bind(this);
     this.eat = this.eat.bind(this);
     this.tryToMoveOrEat = this.tryToMoveOrEat.bind(this);
+    this.nameOf = this.nameOf.bind(this);
+    this.bombCanEat = this.bombCanEat.bind(this);
+    this.countPiecesBetween = this.countPiecesBetween.bind(this);
   }
 
   selectWrongTeamPiece(key) {
@@ -181,14 +184,17 @@ class DarkChessApp extends React.Component {
   }
 
   tryToMoveOrEat(key){
-    if (this.isGridEmpty(key) && this.canMove(key)) {
+    if (this.isPieceFlipped(this.selected()) === false) {
+      return false;
+    }
+    if (this.canMove(key)) {
       console.log('Can move');
       this.move(key);
       this.changePlayer();
       return true;
     }
     // target not empty
-    if (this.isPieceFlipped(key) && this.canEat(key)) {
+    if (this.canEat(key)) {
       console.log('Can eat');
       this.eat(key);
       this.changePlayer();
@@ -197,13 +203,121 @@ class DarkChessApp extends React.Component {
     return false;
   }
   
+  canMove(key) {
+    if (this.isGridEmpty(key) === false) {
+      return false;
+    }
+    const x1 = this.selected() % 8;
+    const y1 = Math.floor(this.selected() / 8);
+    const x2 = key % 8;
+    const y2 = Math.floor(key / 8);
+    if (x1 === x2) {
+      if (y1 - y2 === 1 || y1 - y2 === -1) {
+        return true;
+      }
+    }
+    if (y1 === y2) {
+      if (x1 - x2 === 1 || x1 - x2 === -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  countPiecesBetween(step, forward, key){
+    let count = 0;
+    let times;
+    if (forward) {
+      times = (key - this.selected()) / step;
+    } else {
+      times = (this.selected() - key) / step;
+      step = -step;
+    }
+    for (let i = 1; i < times; i += 1) {
+      if (this.isGridEmpty(this.selected() + i * step) === false) {
+        console.log(this.selected() + i * step);
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  bombCanEat(key) {
+    const x1 = this.selected() % 8;
+    const y1 = Math.floor(this.selected() / 8);
+    const x2 = key % 8;
+    const y2 = Math.floor(key / 8);
+    if (x1 === x2) {
+      if (y1 < y2) {
+        console.log(y1, y2);
+        let count = this.countPiecesBetween(8, true, key);
+        if (count === 1) {
+          return true;
+        }
+        console.log(count);
+        return false;
+      } else if (y1 > y2) {
+        console.log(y1, y2);
+        let count = this.countPiecesBetween(8, false, key);
+        if (count === 1) {
+          return true;
+        }
+        console.log(count);
+        return false;
+      }
+    }
+    if (y1 === y2) {
+      if (x1 < x2) {
+        console.log(x1, x2);
+        let count = this.countPiecesBetween(1, true, key);
+        if (count === 1) {
+          return true;
+        }
+        console.log(count);
+        return false;
+      } else if (x1 > x2) {
+        console.log(x1, x2);
+        let count = this.countPiecesBetween(1, false, key);
+        if (count === 1) {
+          return true;
+        }
+        console.log(count);
+        return false;
+      }
+    }
+  }
+
+  canEat(key) {
+    if (this.isPieceFlipped(key) === false) {
+      return false;
+    }
+    if (food[this.nameOf(this.selected())].indexOf(this.nameOf(key)) === -1) {
+      return false;
+    }
+    const nameOfSelected = this.nameOf(this.selected());
+    if (nameOfSelected !== '包' && nameOfSelected !== '炮') {
+      const sub = this.selected() - key;
+      if (sub === 1 || sub === -1 || sub === 8 || sub === -8) {
+        return true;
+      }
+      return false;
+    } else if (this.bombCanEat(key)) {
+      return true;
+    }
+    return false;
+  }
+
+  nameOf(key) {
+    return this.state.nameList[key];
+  }
+
   eat(key) {
     const r = this.state.redEaten;
     const b = this.state.blackEaten;
     if (this.state.colorList[key] === 'red') {
-      r[r.length] = this.state.nameList[key];
+      r[r.length] = this.nameOf(key);
     } else {
-      b[b.length] = this.state.nameList[key];
+      b[b.length] = this.nameOf(key);
     }
     this.move(key);
     return this.setState({ redEaten: r, blackEaten: b });
@@ -228,117 +342,6 @@ class DarkChessApp extends React.Component {
       colorList: colorL,
     });
     return this.changePlayer();
-  }
-
-  canMove(key) {
-    const x1 = this.selected() % 8;
-    const y1 = Math.floor(this.selected() / 8);
-    const x2 = key % 8;
-    const y2 = Math.floor(key / 8);
-    if (x1 === x2) {
-      if (y1 - y2 === 1 || y1 - y2 === -1) {
-        return true;
-      }
-    }
-    if (y1 === y2) {
-      if (x1 - x2 === 1 || x1 - x2 === -1) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  canEat(key) {
-    const x1 = this.selected() % 8;
-    const y1 = Math.floor(this.selected() / 8);
-    const x2 = key % 8;
-    const y2 = Math.floor(key / 8);
-    if (this.state.statusList[key] === '') {
-      return false;
-    }
-    if (x1 === x2) {
-      if (this.state.nameList[this.selected()] !== '包' && this.state.nameList[this.selected()] !== '炮') {
-        if (y1 - y2 === 1 || y1 - y2 === -1) {
-          if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-            return true;
-          }
-        }
-      } else if (y1 < y2) {
-        console.log(y1, y2);
-        let count = 0;
-        for (let i = 1; i < y2 - y1; i += 1) {
-          if (this.state.classList[this.selected() + i * 8] !== '') {
-            console.log(this.selected() + i * 8);
-            count += 1;
-          }
-        }
-        if (count === 1) {
-          if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-            return true;
-          }
-        }
-        console.log(count);
-        return false;
-      } else if (y1 > y2) {
-        console.log(y1, y2);
-        let count = 0;
-        for (let i = 1; i < y1 - y2; i += 1) {
-          if (this.state.classList[this.selected() - i * 8] !== '') {
-            console.log(this.selected() - i * 8);
-            count += 1;
-          }
-        }
-        if (count === 1) {
-          if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-            return true;
-          }
-        }
-        console.log(count);
-        return false;
-      }
-    }
-    if (y1 === y2) {
-      if (this.state.nameList[this.selected()] !== '包' && this.state.nameList[this.selected()] !== '炮') {
-        if (x1 - x2 === 1 || x1 - x2 === -1) {
-          if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-            return true;
-          }
-        }
-      } else if (x1 < x2) {
-        console.log(x1, x2);
-        let count = 0;
-        for (let i = 1; i < x2 - x1; i += 1) {
-          if (this.state.classList[this.selected() + i] !== '') {
-            console.log(this.selected() + i);
-            count += 1;
-          }
-        }
-        if (count === 1) {
-          if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-            return true;
-          }
-        }
-        console.log(count);
-        return false;
-      } else if (x1 > x2) {
-        console.log(x1, x2);
-        let count = 0;
-        for (let i = 1; i < x1 - x2; i += 1) {
-          if (this.state.classList[this.selected() - i] !== '') {
-            console.log(this.selected() - i);
-            count += 1;
-          }
-        }
-        if (count === 1) {
-          if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
-            return true;
-          }
-        }
-        console.log(count);
-        return false;
-      }
-    }
-    return false;
   }
 
   showNotImplemented() {
