@@ -21891,151 +21891,201 @@
 	      redEaten: [],
 	      blackEaten: []
 	    };
+	    _this.selectWrongTeamPiece = _this.selectWrongTeamPiece.bind(_this);
+	    _this.isGridEmpty = _this.isGridEmpty.bind(_this);
+	    _this.isPieceFlipped = _this.isPieceFlipped.bind(_this);
+	    _this.isPieceRed = _this.isPieceRed.bind(_this);
+	    _this.flipPiece = _this.flipPiece.bind(_this);
+	    _this.isTeamUnset = _this.isTeamUnset.bind(_this);
+	    _this.setTeam = _this.setTeam.bind(_this);
+	    _this.selectPiece = _this.selectPiece.bind(_this);
+	    _this.selected = _this.selected.bind(_this);
+	    _this.resetSelect = _this.resetSelect.bind(_this);
+	    _this.noSelectPiece = _this.noSelectPiece.bind(_this);
+	    _this.changePlayer = _this.changePlayer.bind(_this);
 	    _this.canEat = _this.canEat.bind(_this);
 	    _this.canMove = _this.canMove.bind(_this);
 	    _this.move = _this.move.bind(_this);
+	    _this.eat = _this.eat.bind(_this);
+	    _this.tryToMoveOrEat = _this.tryToMoveOrEat.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(DarkChessApp, [{
-	    key: 'onClick',
-	    value: function onClick(key) {
-	      if (this.state.select === -1) {
-	        if (this.state.classList[key] === '') {
-	          return;
-	        }
-	        if (this.state.team.length !== 0) {
-	          if (this.state.statusList[key] === 'open') {
-	            if (this.state.team[this.state.player] !== this.state.colorList[key]) {
-	              console.log('Can\'t select other team\'s piece');
-	              return;
-	            }
-	          }
-	        }
-	        this.setState({ select: key });
-	        return;
-	      } else if (this.state.select === key) {
-	        // white: cancel select, dark: open
-	        if (this.state.statusList[key] === '') {
-	          // dark: open and change player
-	          var status = this.state.statusList;
-	          var team = this.state.team;
-	          status[key] = 'open';
-	          if (team.length === 0) {
-	            if (this.state.colorList[key] === 'red') {
-	              team = ['red', 'black'];
-	            } else {
-	              team = ['black', 'red'];
-	            }
-	          }
-	          if (this.state.player === 0) {
-	            this.setState({ statusList: status,
-	              team: team,
-	              select: -1,
-	              player: 1
-	            });
-	          } else {
-	            this.setState({ statusList: status,
-	              team: team,
-	              select: -1,
-	              player: 0
-	            });
-	          }
-	          return;
-	        } else if (this.state.statusList[key] !== '') {
-	          // white: cancel
-	          this.setState({ select: -1 });
-	          return;
-	        }
-	      } else if (this.state.select !== key) {
-	        // change select or eat others or move
-	        if (this.state.statusList[this.state.select] === '') {
-	          this.setState({ select: -1 });
-	          return;
-	        }
-	        if (this.state.classList[key] === '') {
-	          if (this.canMove(this.state.select, key)) {
-	            console.log('canMove');
-	            this.move(this.state.select, key);
-	            if (this.state.player === 0) {
-	              this.setState({ select: -1, player: 1 });
-	            } else {
-	              this.setState({ select: -1, player: 0 });
-	            }
-	            return;
-	          }
-	          console.log('cannotMove');
-	          this.setState({ select: -1 });
-	          return;
-	        } else {
-	          // target not empty
-	          if (this.canEat(this.state.select, key)) {
-	            console.log('canEat');
-	            var r = this.state.redEaten;
-	            var b = this.state.blackEaten;
-	            if (this.state.colorList[key] === 'red') {
-	              r[r.length] = this.state.nameList[key];
-	            } else {
-	              b[b.length] = this.state.nameList[key];
-	            }
-	            this.move(this.state.select, key);
-	            if (this.state.player === 0) {
-	              this.setState({ select: -1, player: 1, redEaten: r, blackEaten: b });
-	            } else {
-	              this.setState({ select: -1, player: 0, redEaten: r, blackEaten: b });
-	            }
-	            return;
-	          } else {
-	            // can't eat
-	            console.log('cannotEat');
-	            this.setState({ select: -1 });
-	            return;
+	    key: 'selectWrongTeamPiece',
+	    value: function selectWrongTeamPiece(key) {
+	      if (this.state.team.length !== 0) {
+	        if (this.state.statusList[key] === 'open') {
+	          if (this.state.team[this.state.player] !== this.state.colorList[key]) {
+	            return true;
 	          }
 	        }
 	      }
+	      return false;
+	    }
+	  }, {
+	    key: 'isGridEmpty',
+	    value: function isGridEmpty(key) {
+	      return this.state.classList[key] === '';
+	    }
+	  }, {
+	    key: 'isPieceFlipped',
+	    value: function isPieceFlipped(key) {
+	      return this.state.statusList[key] === 'open';
+	    }
+	  }, {
+	    key: 'isPieceRed',
+	    value: function isPieceRed(key) {
+	      return this.state.colorList[key] === 'red';
+	    }
+	  }, {
+	    key: 'flipPiece',
+	    value: function flipPiece(key) {
+	      var status = this.state.statusList;
+	      status[key] = 'open';
+	      this.setState({ statusList: status });
+	    }
+	  }, {
+	    key: 'isTeamUnset',
+	    value: function isTeamUnset() {
+	      return this.state.team.length === 0;
+	    }
+	  }, {
+	    key: 'setTeam',
+	    value: function setTeam(key) {
+	      var team = [];
+	      if (this.isPieceRed(key)) {
+	        team = ['red', 'black'];
+	      } else {
+	        team = ['black', 'red'];
+	      }
+	      return this.setState({ team: team });
+	    }
+	  }, {
+	    key: 'selectPiece',
+	    value: function selectPiece(key) {
+	      return this.setState({ select: key });
+	    }
+	  }, {
+	    key: 'selected',
+	    value: function selected() {
+	      return this.state.select;
+	    }
+	  }, {
+	    key: 'resetSelect',
+	    value: function resetSelect() {
+	      return this.setState({ select: -1 });
+	    }
+	  }, {
+	    key: 'noSelectPiece',
+	    value: function noSelectPiece() {
+	      return this.state.select === -1;
+	    }
+	  }, {
+	    key: 'changePlayer',
+	    value: function changePlayer() {
+	      this.resetSelect();
+	      if (this.state.player === 0) {
+	        return this.setState({ player: 1 });
+	      }
+	      return this.setState({ player: 0 });
+	    }
+	  }, {
+	    key: 'onClick',
+	    value: function onClick(key) {
+	      if (this.noSelectPiece()) {
+	        if (this.isGridEmpty(key)) {
+	          return;
+	        }
+	        if (this.selectWrongTeamPiece(key)) {
+	          console.log('Can\'t select other team\'s piece');
+	          return;
+	        }
+	        this.selectPiece(key);
+	        return;
+	      } else if (this.selected() === key) {
+	        // white: cancel select, dark: open
+	        if (!this.isPieceFlipped(key)) {
+	          // dark: flip and change player
+	          this.flipPiece(key);
+	          if (this.isTeamUnset()) {
+	            this.setTeam(key);
+	          }
+	          this.changePlayer();
+	          return;
+	        }
+	        // white: cancel
+	        this.resetSelect();
+	        return;
+	      }
+	      // change select or eat others or move
+	      var moveOrEat = this.tryToMoveOrEat(key);
+	      if (moveOrEat === false) {
+	        console.log('Cannot move or eat');
+	        this.resetSelect();
+	        return;
+	      }
+	    }
+	  }, {
+	    key: 'tryToMoveOrEat',
+	    value: function tryToMoveOrEat(key) {
+	      if (this.isGridEmpty(key) && this.canMove(key)) {
+	        console.log('Can move');
+	        this.move(key);
+	        this.changePlayer();
+	        return true;
+	      }
+	      // target not empty
+	      if (this.isPieceFlipped(key) && this.canEat(key)) {
+	        console.log('Can eat');
+	        this.eat(key);
+	        this.changePlayer();
+	        return true;
+	      }
+	      return false;
+	    }
+	  }, {
+	    key: 'eat',
+	    value: function eat(key) {
+	      var r = this.state.redEaten;
+	      var b = this.state.blackEaten;
+	      if (this.state.colorList[key] === 'red') {
+	        r[r.length] = this.state.nameList[key];
+	      } else {
+	        b[b.length] = this.state.nameList[key];
+	      }
+	      this.move(key);
+	      return this.setState({ redEaten: r, blackEaten: b });
 	    }
 	  }, {
 	    key: 'move',
-	    value: function move(key1, key2) {
+	    value: function move(key) {
 	      var classL = this.state.classList;
 	      var statusL = this.state.statusList;
 	      var nameL = this.state.nameList;
 	      var colorL = this.state.colorList;
-	      classL[key2] = classL[key1];
-	      classL[key1] = '';
-	      statusL[key2] = statusL[key1];
-	      statusL[key1] = '';
-	      nameL[key2] = nameL[key1];
-	      nameL[key1] = '';
-	      colorL[key2] = colorL[key1];
-	      colorL[key1] = '';
-	      if (this.state.player === 0) {
-	        this.setState({ classList: classL,
-	          statusList: statusL,
-	          nameList: nameL,
-	          colorList: colorL,
-	          select: -1,
-	          player: 1
-	        });
-	        return;
-	      } else {
-	        this.setState({ classList: classL,
-	          statusList: statusL,
-	          nameList: nameL,
-	          colorList: colorL,
-	          select: -1,
-	          player: 0
-	        });
-	        return;
-	      }
+	      classL[key] = classL[this.selected()];
+	      classL[this.selected()] = '';
+	      statusL[key] = statusL[this.selected()];
+	      statusL[this.selected()] = '';
+	      nameL[key] = nameL[this.selected()];
+	      nameL[this.selected()] = '';
+	      colorL[key] = colorL[this.selected()];
+	      colorL[this.selected()] = '';
+	      this.setState({ classList: classL,
+	        statusList: statusL,
+	        nameList: nameL,
+	        colorList: colorL
+	      });
+	      return this.changePlayer();
 	    }
 	  }, {
 	    key: 'canMove',
-	    value: function canMove(key1, key2) {
-	      var x1 = key1 % 8;
-	      var y1 = Math.floor(key1 / 8);
-	      var x2 = key2 % 8;
-	      var y2 = Math.floor(key2 / 8);
+	    value: function canMove(key) {
+	      var x1 = this.selected() % 8;
+	      var y1 = Math.floor(this.selected() / 8);
+	      var x2 = key % 8;
+	      var y2 = Math.floor(key / 8);
 	      if (x1 === x2) {
 	        if (y1 - y2 === 1 || y1 - y2 === -1) {
 	          return true;
@@ -22050,18 +22100,18 @@
 	    }
 	  }, {
 	    key: 'canEat',
-	    value: function canEat(key1, key2) {
-	      var x1 = key1 % 8;
-	      var y1 = Math.floor(key1 / 8);
-	      var x2 = key2 % 8;
-	      var y2 = Math.floor(key2 / 8);
-	      if (this.state.statusList[key2] === '') {
+	    value: function canEat(key) {
+	      var x1 = this.selected() % 8;
+	      var y1 = Math.floor(this.selected() / 8);
+	      var x2 = key % 8;
+	      var y2 = Math.floor(key / 8);
+	      if (this.state.statusList[key] === '') {
 	        return false;
 	      }
 	      if (x1 === x2) {
-	        if (this.state.nameList[key1] !== '包' && this.state.nameList[key1] !== '炮') {
+	        if (this.state.nameList[this.selected()] !== '包' && this.state.nameList[this.selected()] !== '炮') {
 	          if (y1 - y2 === 1 || y1 - y2 === -1) {
-	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
 	              return true;
 	            }
 	          }
@@ -22069,13 +22119,13 @@
 	          console.log(y1, y2);
 	          var count = 0;
 	          for (var _i4 = 1; _i4 < y2 - y1; _i4 += 1) {
-	            if (this.state.classList[key1 + _i4 * 8] !== '') {
-	              console.log(key1 + _i4 * 8);
+	            if (this.state.classList[this.selected() + _i4 * 8] !== '') {
+	              console.log(this.selected() + _i4 * 8);
 	              count += 1;
 	            }
 	          }
 	          if (count === 1) {
-	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
 	              return true;
 	            }
 	          }
@@ -22085,13 +22135,13 @@
 	          console.log(y1, y2);
 	          var _count = 0;
 	          for (var _i5 = 1; _i5 < y1 - y2; _i5 += 1) {
-	            if (this.state.classList[key1 - _i5 * 8] !== '') {
-	              console.log(key1 - _i5 * 8);
+	            if (this.state.classList[this.selected() - _i5 * 8] !== '') {
+	              console.log(this.selected() - _i5 * 8);
 	              _count += 1;
 	            }
 	          }
 	          if (_count === 1) {
-	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
 	              return true;
 	            }
 	          }
@@ -22100,9 +22150,9 @@
 	        }
 	      }
 	      if (y1 === y2) {
-	        if (this.state.nameList[key1] !== '包' && this.state.nameList[key1] !== '炮') {
+	        if (this.state.nameList[this.selected()] !== '包' && this.state.nameList[this.selected()] !== '炮') {
 	          if (x1 - x2 === 1 || x1 - x2 === -1) {
-	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
 	              return true;
 	            }
 	          }
@@ -22110,13 +22160,13 @@
 	          console.log(x1, x2);
 	          var _count2 = 0;
 	          for (var _i6 = 1; _i6 < x2 - x1; _i6 += 1) {
-	            if (this.state.classList[key1 + _i6] !== '') {
-	              console.log(key1 + _i6);
+	            if (this.state.classList[this.selected() + _i6] !== '') {
+	              console.log(this.selected() + _i6);
 	              _count2 += 1;
 	            }
 	          }
 	          if (_count2 === 1) {
-	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
 	              return true;
 	            }
 	          }
@@ -22126,13 +22176,13 @@
 	          console.log(x1, x2);
 	          var _count3 = 0;
 	          for (var _i7 = 1; _i7 < x1 - x2; _i7 += 1) {
-	            if (this.state.classList[key1 - _i7] !== '') {
-	              console.log(key1 - _i7);
+	            if (this.state.classList[this.selected() - _i7] !== '') {
+	              console.log(this.selected() - _i7);
 	              _count3 += 1;
 	            }
 	          }
 	          if (_count3 === 1) {
-	            if (food[this.state.nameList[key1]].indexOf(this.state.nameList[key2]) !== -1) {
+	            if (food[this.state.nameList[this.selected()]].indexOf(this.state.nameList[key]) !== -1) {
 	              return true;
 	            }
 	          }
